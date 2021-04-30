@@ -17,16 +17,20 @@ namespace EmployeeManagement.Controllers
     public class HomeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly ILogger _logger;
+        private readonly IWebHostEnvironment hostingEnvironment;
+        private readonly ILogger logger;
 
+        
+        //CONSTRUCTOR
         public HomeController(IEmployeeRepository employeeRepository, IWebHostEnvironment hostingEnvironment, ILogger<HomeController> logger)
         {
             _employeeRepository = employeeRepository;
-            _hostingEnvironment = hostingEnvironment;
-            _logger = logger;
+            this.hostingEnvironment = hostingEnvironment;
+            this.logger = logger;
         }
 
+
+        //INDEX
         [AllowAnonymous]
         public ViewResult Index()
         {
@@ -34,37 +38,42 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //DETAILS
         [AllowAnonymous]
         public ViewResult Details(int? id = 3)
         {
-            _logger.LogTrace("Trace log");
-            _logger.LogWarning("Warning Log");
-            _logger.LogDebug("Debug Log");
-            _logger.LogError("Error Log");
-            _logger.LogCritical("Critical log");
-            _logger.LogInformation("Information Log");
+            logger.LogTrace("Trace log");
+            logger.LogWarning("Warning Log");
+            logger.LogDebug("Debug Log");
+            logger.LogError("Error Log");
+            logger.LogCritical("Critical log");
+            logger.LogInformation("Information Log");
 
             Employee employee = _employeeRepository.GetEmployee(id ?? 1);
-
             if (employee == null)
             {
                 Response.StatusCode = 404;
                 return View("EmployeeNotFound", id.Value);
             }
-            HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
+            HomeDetailsViewModel model = new HomeDetailsViewModel()
             {
                 Employee = employee,
             };
-            return View(homeDetailsViewModel);
+            return View(model);
         }
 
 
+
+        //CREATE GET
         [HttpGet]
         public ViewResult Create()
         {
             return View();
         }
 
+
+        //CREATE POST
         [HttpPost]
         public IActionResult Create(CreateEmployeeViewModel model)
         {
@@ -84,6 +93,8 @@ namespace EmployeeManagement.Controllers
             return View();
         }
 
+
+        //EDIT GET
         [HttpGet]
         public ViewResult Edit(int id)
         {
@@ -99,6 +110,8 @@ namespace EmployeeManagement.Controllers
             return View(employeeEditViewModel);
         }
 
+
+        //EDIT POST
         [HttpPost]
         public IActionResult Edit(EditEmployeeViewModel model)
         {
@@ -112,7 +125,7 @@ namespace EmployeeManagement.Controllers
                 {
                     if (model.existingPhotoPath != null)
                     {
-                        string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "images", model.existingPhotoPath);
+                        string filePath = Path.Combine(hostingEnvironment.WebRootPath, "images", model.existingPhotoPath);
                         System.IO.File.Delete(filePath);
                     }
                     employee.PhotoPath = ProcessUploadedFile(model);
@@ -121,16 +134,17 @@ namespace EmployeeManagement.Controllers
 
                 return RedirectToAction("details", new { id = employee.Id });
             }
-
             return View();
         }
 
+
+        //PROCESSUPLOADEDFILE
         private string ProcessUploadedFile(CreateEmployeeViewModel model)
         {
             string UniqueFileName = null;
             if (model.Photo != null)
             {
-                string UploadPath = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                string UploadPath = Path.Combine(hostingEnvironment.WebRootPath, "images");
                 UniqueFileName = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
                 string filePath = Path.Combine(UploadPath, UniqueFileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -138,7 +152,6 @@ namespace EmployeeManagement.Controllers
                     model.Photo.CopyTo(fileStream);
                 }
             }
-
             return UniqueFileName;
         }
     } 

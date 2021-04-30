@@ -16,13 +16,15 @@ namespace EmployeeManagement.Controllers
     //[Authorize(Roles ="Admin,User")]    //only admins or users can access this route
     //[Authorize(Roles = "Admin")]    //when we have another Authorize attribute, both will have to be satisfied before we can access this route
     [Authorize(Roles = "Admin")]
-    //[Authorize(Policy = "AdminRolePolicy")] //using claims based authorization instead of role based authorization
+    [Authorize(Policy = "AdminRolePolicy")] //using claims based authorization instead of role based authorization
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<AdministrationController> logger;
 
+
+        //CONSTRUCTOR
         public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, ILogger<AdministrationController> logger)
         {
             this.roleManager = roleManager;
@@ -30,12 +32,25 @@ namespace EmployeeManagement.Controllers
             this.logger = logger;
         }
 
+
+        //LIST ROLES
+        [HttpGet]
+        public IActionResult ListRoles()
+        {
+            var roles = roleManager.Roles;
+            return View(roles);
+        }
+
+
+        //CREATE ROLE GET
         [HttpGet]
         public IActionResult CreateRole()
         {
             return View();
         }
 
+
+        //CREATE ROLE POST
         [HttpPost]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
         {
@@ -59,13 +74,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public IActionResult ListRoles()
-        {
-            var roles = roleManager.Roles;
-            return View(roles);
-        }
 
+        //EDIT ROLE GET
         [HttpGet]
         public async Task<IActionResult> EditRole(string Id)
         {
@@ -91,6 +101,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //EDIT ROLE POST
         [HttpPost]
         public async Task<IActionResult> EditRole(EditRoleViewModel model)
         {            
@@ -113,8 +125,10 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //DELETE ROLE POST
         [HttpPost]
-        //[Authorize(Policy = "DeleteRolePolicy")]
+        [Authorize(Policy = "DeleteRolePolicy")]
         public async Task<IActionResult> DeleteRole(string id)
         {
             var role = await roleManager.FindByIdAsync(id);
@@ -148,6 +162,8 @@ namespace EmployeeManagement.Controllers
             
         }
 
+
+        //EDIT USERS IN ROLE GET
         [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
@@ -174,6 +190,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //EDIT USERS IN ROLE POST
         [HttpPost]
         public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> model, string roleId)
         {
@@ -215,12 +233,16 @@ namespace EmployeeManagement.Controllers
 
         }
 
+
+        //LIST USERS
         public IActionResult ListUsers()
         {
             var users = userManager.Users;
             return View(users);
         }
 
+
+        //EDIT USERS GET
         [HttpGet]
         public async Task<IActionResult> EditUser(string Id)
         {
@@ -246,6 +268,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //EDIT USERS POST
         [HttpPost]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
@@ -272,6 +296,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //DELETE USER
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await userManager.FindByIdAsync(id);
@@ -293,8 +319,10 @@ namespace EmployeeManagement.Controllers
 
         }
 
+
+        //MANAGE USER ROLE GET
         [HttpGet]
-        //[Authorize("EditRolePolicy")]
+        [Authorize("EditRolePolicy")]
         public async Task<IActionResult> ManageUserRoles(string userId)
         {
             ViewBag.userId = userId;
@@ -318,8 +346,10 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //MANAGE USER ROLE POST
         [HttpPost]
-        //[Authorize("EditRolePolicy")]
+        [Authorize("EditRolePolicy")]
         public async Task<IActionResult> ManageUserRoles(List<UserRolesViewModel> model, string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
@@ -344,6 +374,8 @@ namespace EmployeeManagement.Controllers
             return RedirectToAction("EditUser", new { Id = userId });
         }
 
+
+        //MANAGE USER CLAIMS GET
         [HttpGet]
         public async Task<IActionResult> ManageUserClaims(string userId)
         {
@@ -374,6 +406,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //MANAGE USER CLAIMS POST
         [HttpPost]
         public async Task<IActionResult> ManageUserClaims(UserClaimsViewModel model)
         {
@@ -401,6 +435,8 @@ namespace EmployeeManagement.Controllers
             return RedirectToAction("EditUser", new { Id = model.UserId});
         }
 
+
+        //ACCESS DENIED
         [HttpGet, AllowAnonymous]
         public IActionResult AccessDenied()
         {

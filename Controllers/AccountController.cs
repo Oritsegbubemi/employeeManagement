@@ -20,6 +20,8 @@ namespace EmployeeManagement.Controllers
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ILogger logger;
 
+
+        //CONSTRUCTOR
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger)
         {
             this.userManager = userManager;
@@ -27,12 +29,16 @@ namespace EmployeeManagement.Controllers
             this.logger = logger;
         }
 
+
+        //REGISTER USER GET
         [HttpGet, AllowAnonymous]
         public IActionResult Register()
         {            
             return View();
         }
 
+
+        //IS EMAIL IN USE
         [HttpPost, HttpGet, AllowAnonymous]
         public async Task<IActionResult> IsEmailInUse(string email)
         {
@@ -44,6 +50,8 @@ namespace EmployeeManagement.Controllers
             return Json($"Email {email} already exists");
         }
 
+
+        //REGISTER USER POST
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -80,13 +88,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Logout()
-        {
-            await signInManager.SignOutAsync();
-            return RedirectToAction("index", "home");
-
-        }
-
+        
+        //LOGIN GET
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl)
         {
@@ -98,6 +101,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //LOGIN POST
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, [FromQuery] string returnUrl)
         {
@@ -127,6 +132,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         } 
         
+
+        //EXTERNAL LOGIN
         [AllowAnonymous, HttpPost]
         public IActionResult ExternalLogin(string provider, string returnUrl)
         {
@@ -136,6 +143,8 @@ namespace EmployeeManagement.Controllers
             return new ChallengeResult(provider, properties);
         }
 
+
+        //EXTERNAL LOGIN CALL BACK
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         { 
@@ -210,6 +219,8 @@ namespace EmployeeManagement.Controllers
             return View(loginViewModel);
         }
 
+
+        //CONFIRM EMAIL 
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
@@ -232,6 +243,8 @@ namespace EmployeeManagement.Controllers
             return View("Error");
         }
 
+
+        //FORGOT PASSWORD GET
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPassword()
@@ -239,6 +252,8 @@ namespace EmployeeManagement.Controllers
             return View();
         }
 
+
+        //FORGOT PASSWORD POST
         [HttpPost][AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
@@ -257,6 +272,8 @@ namespace EmployeeManagement.Controllers
             return View(model);
         }
 
+
+        //RESET PASSWORD GET
         [HttpGet][AllowAnonymous]
         public IActionResult ResetPassword(string token, string email)
         {
@@ -267,6 +284,8 @@ namespace EmployeeManagement.Controllers
             return View();
         }
 
+
+        //RESET PASSWORD POST
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
@@ -290,6 +309,14 @@ namespace EmployeeManagement.Controllers
                 return View("ResetPasswordConfirmation");
             }
             return View(model);
+        }
+
+
+        //LOGOUT
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("index", "home");
         }
     }
 }
