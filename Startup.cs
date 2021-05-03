@@ -62,13 +62,17 @@ namespace EmployeeManagement
             }).AddXmlSerializerFormatters();
 
             //adds google adn facebook auth to the app
-            //services.AddAuthentication().AddGoogle(options => {
-            //    options.ClientId = _config.GetSection("Google")["ClientId"];
-            //    options.ClientSecret = _config.GetSection("Google")["ClientSecret"];
-            //}).AddFacebook(options => {
-            //    options.AppId = _config.GetSection("Facebook")["AppId"];
-            //    options.AppSecret = _config.GetSection("Facebook")["AppSecret"];
-            //});
+            //services.AddAuthentication()
+            //    .AddGoogle(options => 
+            //    {
+            //        options.ClientId = _config.GetSection("Google")["ClientId"];
+            //        options.ClientSecret = _config.GetSection("Google")["ClientSecret"];
+            //    })
+            //    .AddFacebook(options =>
+            //    {
+            //        options.AppId = _config.GetSection("Facebook")["AppId"];
+            //        options.AppSecret = _config.GetSection("Facebook")["AppSecret"];
+            //    });
 
             //services.AddMvcCore(options => options.EnableEndpointRouting = false);
             //registers a singleton. This is how we register interfaces to concrete implementations
